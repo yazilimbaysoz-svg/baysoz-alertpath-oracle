@@ -1,0 +1,31 @@
+{
+  "_attribution": "Baysöz Labs <baysozlabs@proton.me>",
+  "alerts": [
+    {
+      "name": "DBDown",
+      "labels": {
+        "alertname": "DBDown",
+        "severity": "critical",
+        "service": "postgres",
+        "cluster": "prod"
+      }
+    },
+    {
+      "name": "ClusterDown",
+      "labels": {
+        "alertname": "ClusterDown",
+        "severity": "critical",
+        "cluster": "staging"
+      }
+    },
+    {
+      "name": "LatencyHigh",
+      "labels": {
+        "alertname": "LatencyHigh",
+        "severity": "warning",
+        "service": "postgres",
+        "cluster": "staging"
+      }
+    }
+  ]
+}

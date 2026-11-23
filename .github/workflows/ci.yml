@@ -1,0 +1,49 @@
+# Baysöz Labs <baysozlabs@proton.me>
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Install uv with Python 3.13
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86
+        with:
+          python-version: "3.13"
+
+      - name: Create environment and install
+        run: |
+          uv venv
+          uv pip install -e .
+          uv pip install pytest ruff semgrep
+
+      - name: Unit and integration tests
+        run: uv run pytest -q
+
+      - name: Lint and static security
+        run: |
+          uv run ruff check --select E,F,W,S,B .
+          uv run semgrep --config p/default --error .
+
+      - name: Live CLI gate against fixtures
+        run: |
+          uv run baysoz-alertpath-oracle audit examples/alertmanager.yml --at 2026-01-01T12:00:00Z
+          uv run baysoz-alertpath-oracle route examples/alertmanager.yml --alerts examples/alerts.json --at 2026-01-01T12:00:00Z
+          uv run baysoz-alertpath-oracle gate examples/alertmanager.yml --fixtures examples/fixtures.json --at 2026-01-01T12:00:00Z --sarif alertpath.sarif
+
+      - name: Upload SARIF evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: alertpath-sarif
+          path: alertpath.sarif

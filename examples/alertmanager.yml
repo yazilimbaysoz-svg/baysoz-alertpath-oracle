@@ -1,0 +1,42 @@
+# Baysöz Labs <baysozlabs@proton.me>
+route:
+  receiver: catchall
+  group_by: [alertname, cluster]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - receiver: database-pager
+      matchers: ['severity="critical"', 'service=~"postgres|mysql"']
+      group_wait: 10s
+      continue: true
+    - receiver: storage-pager
+      matchers: ['service="postgres"', 'severity="critical"']
+      group_by: [alertname]
+    - receiver: low-priority-ticket
+      matchers: ['severity="warning"']
+      active_time_intervals: [business-hours]
+
+receivers:
+  - name: catchall
+    webhook_configs: [{url: "https://alerts.example.invalid/hook"}]
+  - name: database-pager
+    pagerduty_configs: [{service_key: "example"}]
+  - name: storage-pager
+    slack_configs: [{channel: "#storage-alerts"}]
+  - name: low-priority-ticket
+    email_configs: [{to: "sre@example.invalid"}]
+
+inhibit_rules:
+  - name: cluster-down-mutes-dependents
+    source_matchers: ['alertname="ClusterDown"', 'severity="critical"']
+    target_matchers: ['severity=~"warning|critical"']
+    equal: [cluster]
+
+time_intervals:
+  - name: business-hours
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '09:00'
+            end_time: '17:00'

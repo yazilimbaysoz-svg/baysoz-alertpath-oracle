@@ -1,0 +1,14 @@
+# Baysöz Labs <baysozlabs@proton.me>
+__pycache__/
+*.py[cod]
+.venv/
+uv.lock
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+.sarif/
+coverage.xml
+.htmlcov/
+.DS_Store

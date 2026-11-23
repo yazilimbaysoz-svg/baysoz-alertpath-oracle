@@ -1,0 +1,52 @@
+# Baysöz Labs <baysozlabs@proton.me>
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "baysoz-alertpath-oracle"
+version = "0.1.0"
+description = "Offline Alertmanager route reachability, shadowing and inhibition conformance oracle with SARIF CI gates by Baysöz Labs <baysozlabs@proton.me>"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+authors = [{ name = "Baysöz Labs", email = "baysozlabs@proton.me" }]
+maintainers = [{ name = "Baysöz Labs", email = "baysozlabs@proton.me" }]
+keywords = ["observability", "alertmanager", "prometheus", "sre", "sarif", "ci-gate"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: System Administrators",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: System :: Monitoring",
+]
+dependencies = ["PyYAML>=6.0.2,<7.0"]
+
+[project.urls]
+Homepage = "https://github.com/yazilimbaysoz-svg/baysoz-alertpath-oracle"
+Source = "https://github.com/yazilimbaysoz-svg/baysoz-alertpath-oracle"
+Issues = "https://github.com/yazilimbaysoz-svg/baysoz-alertpath-oracle/issues"
+Author = "mailto:baysozlabs@proton.me"
+
+[project.scripts]
+baysoz-alertpath-oracle = "baysoz_alertpath.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3", "ruff>=0.17", "semgrep>=1.120"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/baysoz_alertpath"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "S", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]

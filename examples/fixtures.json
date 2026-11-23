@@ -1,0 +1,37 @@
+{
+  "_attribution": "Baysöz Labs <baysozlabs@proton.me>",
+  "fixtures": [
+    {
+      "name": "DBDown",
+      "labels": {
+        "alertname": "DBDown",
+        "severity": "critical",
+        "service": "postgres",
+        "cluster": "prod"
+      },
+      "expect_receivers": ["database-pager", "storage-pager"],
+      "expect_inhibited_by": []
+    },
+    {
+      "name": "ClusterDown",
+      "labels": {
+        "alertname": "ClusterDown",
+        "severity": "critical",
+        "cluster": "staging"
+      },
+      "expect_receivers": ["catchall"],
+      "expect_inhibited_by": []
+    },
+    {
+      "name": "LatencyHigh",
+      "labels": {
+        "alertname": "LatencyHigh",
+        "severity": "warning",
+        "service": "postgres",
+        "cluster": "staging"
+      },
+      "expect_receivers": [],
+      "expect_inhibited_by": ["inhibit_rules[0]"]
+    }
+  ]
+}
